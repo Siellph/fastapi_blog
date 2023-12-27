@@ -2,7 +2,7 @@ fastapi_blog
 
 Блог с использованием Fast Api
 ___
-**Стэк:**
+**Стэк технологий**
 ___
 + :rocket: Framework: FAST API
 + ORM: SQLAlchemy2.0
