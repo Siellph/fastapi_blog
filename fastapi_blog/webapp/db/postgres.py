@@ -1,9 +1,9 @@
 from typing import AsyncGenerator
 
-from sqlalchemy import QueuePool
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
-
 from conf.config import settings
+from sqlalchemy import QueuePool
+from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
+                                    async_sessionmaker, create_async_engine)
 
 
 def create_engine() -> AsyncEngine:

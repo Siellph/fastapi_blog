@@ -41,6 +41,21 @@ services:
     networks:
       - sirius_network
 
+  migrate:
+    container_name: migrate
+    build:
+      dockerfile: docker/Dockerfile
+      context: .
+    command: sh -c "alembic revision --autogenerate -m 'initial' && alembic upgrade head"
+    env_file:
+      - ./conf/.env
+    volumes:
+      - .:/code
+    depends_on:
+      - web_db
+    networks:
+      - sirius_network
+
   redis:
     container_name: redis
     image: redis:6.2.4
