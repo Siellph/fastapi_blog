@@ -1,0 +1,15 @@
+[
+    {
+      "id": 1,
+      "title": "Test post",
+      "content": "Lorem ipsum dolor sit amet",
+      "author_id": 1
+    },
+    {
+      "id": 2,
+      "title": "Another post",
+      "content": "Consectetur adipiscing elit",
+      "author_id": 1
+    }
+  ]
+  
