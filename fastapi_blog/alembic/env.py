@@ -3,6 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from webapp.models.meta import Base
+from webapp.models.sirius.user import User
+from webapp.models.sirius.post import Post
+from webapp.models.sirius.comment import Comment
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
