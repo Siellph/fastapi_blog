@@ -17,7 +17,7 @@ async def get_user(session: AsyncSession, user_info: UserLogin) -> User | None:
     ).one_or_none()
 
 
-async def create_user(session: AsyncSession, email: str, username: str, hashed_password: str) -> User:
+async def create_user(session: AsyncSession, username: str, email: str, hashed_password: str) -> User:
     new_user = User(email=email, username=username, hashed_password=hashed_password)
     session.add(new_user)
     await session.commit()
