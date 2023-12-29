@@ -12,10 +12,6 @@ ___
 + :ship: Docker
 + :snake: Python 3.11
 ___
-Перед запуском проекта необходимо создать сеть
-```
-sudo docker network create sirius_network
-```
 Для запуска проекта на локальном ПК используется следующая команда
 ```
 sudo docker-compose up --build
