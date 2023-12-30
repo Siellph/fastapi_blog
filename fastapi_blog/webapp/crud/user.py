@@ -33,3 +33,8 @@ async def create_user(session: AsyncSession, username: str, email: str, hashed_p
 async def get_user_by_email(session: AsyncSession, email: str) -> User | None:
     result = await session.scalars(select(User).where(User.email == email))
     return result.one_or_none()
+
+
+async def get_user_by_username(session: AsyncSession, username: str) -> User | None:
+    result = await session.scalars(select(User).where(User.username == username))
+    return result.one_or_none()
