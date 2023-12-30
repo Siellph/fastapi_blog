@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import Depends, HTTPException, status
+from fastapi.responses import ORJSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .router import comment_router
@@ -11,12 +12,17 @@ from webapp.schema.content.comment import CommentCreate, CommentRead, CommentUpd
 from webapp.utils.auth.user import get_current_user
 
 
-@comment_router.get('/{post_id}', response_model=List[CommentRead])
+@comment_router.get('/{post_id}', response_model=List[CommentRead], response_class=ORJSONResponse)
 async def read_comments(post_id: int, session: AsyncSession = Depends(get_session)):
     return await get_comments_by_post(session, post_id)
 
 
-@comment_router.post('/{post_id}/create_comments', response_model=CommentRead, status_code=status.HTTP_201_CREATED)
+@comment_router.post(
+    '/{post_id}/create_comments',
+    response_model=CommentRead,
+    status_code=status.HTTP_201_CREATED,
+    response_class=ORJSONResponse,
+)
 async def create(
     post_id: int,
     comment: CommentCreate,
@@ -26,7 +32,7 @@ async def create(
     return await create_comment(session, comment.content, current_user.id, post_id)
 
 
-@comment_router.put('/{comment_id}', response_model=CommentRead)
+@comment_router.put('/{comment_id}', response_model=CommentRead, response_class=ORJSONResponse)
 async def update(
     comment_id: int,
     comment_update: CommentUpdate,
@@ -39,7 +45,7 @@ async def update(
     return await update_comment(session, comment_id, comment_update.content)
 
 
-@comment_router.delete('/{comment_id}', status_code=status.HTTP_204_NO_CONTENT)
+@comment_router.delete('/{comment_id}', status_code=status.HTTP_204_NO_CONTENT, response_class=ORJSONResponse)
 async def delete(
     comment_id: int, session: AsyncSession = Depends(get_session), current_user: User = Depends(get_current_user)
 ):
