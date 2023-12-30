@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from webapp.api.file.router import file_router
 from webapp.api.login.router import auth_router
+from webapp.api.post.router import post_router
 from webapp.api.registration.router import reg_router
 from webapp.metrics import metrics
 from webapp.on_shutdown import stop_producer
@@ -29,6 +30,7 @@ def setup_routers(app: FastAPI) -> None:
 
     app.include_router(auth_router)
     app.include_router(reg_router)
+    app.include_router(post_router)
     app.include_router(file_router)
 
 
