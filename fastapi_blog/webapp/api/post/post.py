@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .router import post_router
-from webapp.crud.post import create_post, delete_post, get_all_posts, get_post_by_id, update_post, get_posts_by_user
+from webapp.crud.post import create_post, delete_post, get_all_posts, get_post_by_id, get_posts_by_user, update_post
 from webapp.db.postgres import get_session
 from webapp.schema.content.post import PostCreate, PostRead, PostUpdate
 from webapp.schema.login.user import User
