@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .router import post_router
-from webapp.crud.post import create_post, delete_post, get_all_posts, get_post_by_id, update_post
+from webapp.crud.post import create_post, delete_post, get_all_posts, get_post_by_id, update_post, get_posts_by_user
 from webapp.db.postgres import get_session
 from webapp.schema.content.post import PostCreate, PostRead, PostUpdate
 from webapp.schema.login.user import User
@@ -14,6 +14,20 @@ from webapp.utils.auth.user import get_current_user
 @post_router.get('/', response_model=List[PostRead])
 async def read_posts(session: AsyncSession = Depends(get_session)):
     return await get_all_posts(session)
+
+
+@post_router.get('/{post_id}', response_model=PostRead)
+async def read_post_by_id(post_id: int, session: AsyncSession = Depends(get_session)):
+    post = await get_post_by_id(session, post_id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Post not found')
+    return post
+
+
+@post_router.get('/{user_id}', response_model=List[PostRead])
+async def read_posts_by_user(user_id: int, session: AsyncSession = Depends(get_session)):
+    posts = await get_posts_by_user(session, user_id)
+    return posts
 
 
 @post_router.post('/create', response_model=PostRead, status_code=status.HTTP_201_CREATED)
