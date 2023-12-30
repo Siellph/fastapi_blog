@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 
-from sqlalchemy import QueuePool
+from sqlalchemy import AsyncAdaptedQueuePool
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 from conf.config import settings
@@ -9,7 +9,7 @@ from conf.config import settings
 def create_engine() -> AsyncEngine:
     return create_async_engine(
         settings.DB_URL,
-        poolclass=QueuePool,
+        poolclass=AsyncAdaptedQueuePool,
         connect_args={
             'statement_cache_size': 0,
         },
