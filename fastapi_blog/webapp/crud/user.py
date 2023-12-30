@@ -17,6 +17,11 @@ async def get_user(session: AsyncSession, user_info: UserLogin) -> User | None:
     ).one_or_none()
 
 
+async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
+    result = await session.scalars(select(User).where(User.id == user_id))
+    return result.one_or_none()
+
+
 async def create_user(session: AsyncSession, username: str, email: str, hashed_password: str) -> User:
     new_user = User(email=email, username=username, hashed_password=hashed_password)
     session.add(new_user)

@@ -5,8 +5,6 @@ echo "Start service" # выводит сообщения
 
 # migrate database
 # python scripts/migrate.py # скрипт выполняет миграции базы данных
-# генерируем миграции
-alembic revision --autogenerate -m "Generate table"
 
 # Выполнение миграций Alembic
 alembic upgrade head
