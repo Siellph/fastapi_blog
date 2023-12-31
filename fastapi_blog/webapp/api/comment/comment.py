@@ -30,11 +30,8 @@ async def read_comments(post_id: int, session: AsyncSession = Depends(get_sessio
 
     comments = await get_comments_by_post(session, post_id)
     # Преобразование в модели Pydantic и сериализация
-    print(comments)
     pydantic_comments = [CommentRead.from_orm(comment) for comment in comments]
-    print(pydantic_comments)
     serialized_comments = orjson.dumps([comment.dict() for comment in pydantic_comments])
-    print(serialized_comments)
     await redis_startup.redis.set(cache_key, serialized_comments, ex=60)
     return pydantic_comments
 
