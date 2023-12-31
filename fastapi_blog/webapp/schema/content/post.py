@@ -17,6 +17,9 @@ class PostRead(PostBase):
     author_id: int
     created_at: datetime
 
+    class Config:
+        from_attributes = True
+
 
 class PostUpdate(BaseModel):
     content: Optional[str] = None

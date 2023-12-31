@@ -18,6 +18,9 @@ class CommentRead(CommentBase):
     post_id: int
     created_at: datetime
 
+    class Config:
+        from_attributes = True
+
 
 class CommentUpdate(BaseModel):
     content: Optional[str] = None

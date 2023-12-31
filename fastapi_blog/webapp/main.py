@@ -10,8 +10,9 @@ from webapp.api.login.router import auth_router
 from webapp.api.post.router import post_router
 from webapp.api.registration.router import reg_router
 from webapp.metrics import metrics
-from webapp.on_shutdown import stop_producer
+from webapp.on_shutdown import close_redis_pool, stop_producer
 from webapp.on_startup.kafka import create_producer
+from webapp.on_startup.redis import get_redis_pool
 
 
 def setup_middleware(app: FastAPI) -> None:
@@ -39,9 +40,11 @@ def setup_routers(app: FastAPI) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await create_producer()
+    await get_redis_pool()
     print('START APP')
     yield
     await stop_producer()
+    await close_redis_pool()
     print('END APP')
 
 
