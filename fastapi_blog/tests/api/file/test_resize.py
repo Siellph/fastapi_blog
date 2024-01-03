@@ -15,7 +15,7 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
     ('username', 'password', 'fixtures', 'mocked_hex', 'width', 'height', 'kafka_expected_messages'),
     [
         (
-            'test',
+            'autotest',
             'qwerty',
             [
                 FIXTURES_PATH / 'sirius.user.json',
