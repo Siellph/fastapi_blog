@@ -5,7 +5,7 @@
 import time
 import uuid
 
-import msgpack
+import msgpack  # type: ignore
 from fastapi import Depends
 from fastapi.responses import ORJSONResponse
 

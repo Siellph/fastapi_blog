@@ -1,7 +1,6 @@
 from pathlib import Path
 
-import msgpack
-
+import msgpack  # type: ignore
 
 BASE_DIR = Path(__file__).parent
 

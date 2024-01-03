@@ -8,7 +8,7 @@ from webapp.models.sirius.post import Post
 
 async def get_all_posts(session: AsyncSession) -> List[Post]:
     result = await session.scalars(select(Post))
-    return result.all()
+    return list(result.all())
 
 
 async def create_post(session: AsyncSession, content: str, author_id: int) -> Post:
@@ -44,4 +44,4 @@ async def delete_post(session: AsyncSession, post_id: int) -> bool:
 
 async def get_posts_by_user(session: AsyncSession, user_id: int) -> List[Post]:
     result = await session.scalars(select(Post).where(Post.author_id == user_id))
-    return result.all()
+    return list(result.all())

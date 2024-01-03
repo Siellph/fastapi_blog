@@ -1,4 +1,4 @@
-from aiokafka.producer import AIOKafkaProducer
+from aiokafka.producer import AIOKafkaProducer  # type: ignore
 
 from conf.config import settings
 from webapp.db import kafka

@@ -12,7 +12,12 @@ from webapp.utils.auth.jwt import jwt_auth
 from webapp.utils.auth.password import hash_password
 
 
-@reg_router.post('/register', response_model=UserLoginResponse, status_code=status.HTTP_201_CREATED)
+@reg_router.post(
+    '/register',
+    response_model=UserLoginResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=['Registration'],
+)
 async def register(
     body: UserRegistration,
     session: AsyncSession = Depends(get_session),

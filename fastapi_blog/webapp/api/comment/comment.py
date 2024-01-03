@@ -17,13 +17,13 @@ from webapp.utils.auth.user import get_current_user
 # Дополнительная функция для инвалидации кэша
 async def invalidate_cache(post_id: int):
     cache_key = f'comments_{post_id}'
-    await redis_startup.redis.delete(cache_key)
+    await redis_startup.redis.delete(cache_key) if redis_startup.redis is not None else None
 
 
-@comment_router.get('/{post_id}', response_model=List[CommentRead], response_class=ORJSONResponse)
+@comment_router.get('/{post_id}', response_model=List[CommentRead], response_class=ORJSONResponse, tags=['Comments'])
 async def read_comments(post_id: int, session: AsyncSession = Depends(get_session)):
     cache_key = f'comments_{post_id}'
-    cached_comments = await redis_startup.redis.get(cache_key)
+    cached_comments = await redis_startup.redis.get(cache_key) if redis_startup.redis is not None else None
     if cached_comments:
         # Десериализация кэшированных данных
         return [CommentRead(**comment) for comment in orjson.loads(cached_comments)]
@@ -32,7 +32,7 @@ async def read_comments(post_id: int, session: AsyncSession = Depends(get_sessio
     # Преобразование в модели Pydantic и сериализация
     pydantic_comments = [CommentRead.from_orm(comment) for comment in comments]
     serialized_comments = orjson.dumps([comment.dict() for comment in pydantic_comments])
-    await redis_startup.redis.set(cache_key, serialized_comments, ex=60)
+    await redis_startup.redis.set(cache_key, serialized_comments, ex=60) if redis_startup.redis is not None else None
     return pydantic_comments
 
 
@@ -41,6 +41,7 @@ async def read_comments(post_id: int, session: AsyncSession = Depends(get_sessio
     response_model=CommentRead,
     status_code=status.HTTP_201_CREATED,
     response_class=ORJSONResponse,
+    tags=['Comments'],
 )
 async def create(
     post_id: int,
@@ -53,7 +54,7 @@ async def create(
     return CommentRead.from_orm(created_comment)
 
 
-@comment_router.put('/{comment_id}', response_model=CommentRead, response_class=ORJSONResponse)
+@comment_router.put('/{comment_id}', response_model=CommentRead, response_class=ORJSONResponse, tags=['Comments'])
 async def update(
     comment_id: int,
     comment_update: CommentUpdate,
@@ -63,13 +64,19 @@ async def update(
     comment = await get_comment_by_id(session, comment_id)
     if not comment or comment.author_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Not authorized to update this comment')
+    if comment_update.content and comment_update.content is not None:
+        updated_comment = await update_comment(session, comment_id, comment_update.content)
+        await invalidate_cache(comment.post_id)
+        return CommentRead.from_orm(updated_comment)
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Поле content не может быть пустым')
 
-    updated_comment = await update_comment(session, comment_id, comment_update.content)
-    await invalidate_cache(comment.post_id)
-    return CommentRead.from_orm(updated_comment)
 
-
-@comment_router.delete('/{comment_id}', status_code=status.HTTP_204_NO_CONTENT, response_class=ORJSONResponse)
+@comment_router.delete(
+    '/{comment_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=ORJSONResponse,
+    tags=['Comments'],
+)
 async def delete(
     comment_id: int, session: AsyncSession = Depends(get_session), current_user: User = Depends(get_current_user)
 ):

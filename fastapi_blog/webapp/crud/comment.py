@@ -40,4 +40,4 @@ async def delete_comment(session: AsyncSession, comment_id: int) -> bool:
 
 async def get_comments_by_post(session: AsyncSession, post_id: int) -> List[Comment]:
     result = await session.scalars(select(Comment).where(Comment.post_id == post_id))
-    return result.all()
+    return list(result.all())

@@ -1,8 +1,8 @@
 import os
 
-import prometheus_client
+import prometheus_client  # type: ignore
 from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, CollectorRegistry, generate_latest
-from prometheus_client.multiprocess import MultiProcessCollector
+from prometheus_client.multiprocess import MultiProcessCollector  # type: ignore
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -33,8 +33,7 @@ DEFAULT_BUCKETS = (
 # prometheus_client.Counter(
 #     'sirius_deps_latency_seconds',
 #     '',
-#     ['endpoint'],
-# )
+#     ['endpoint'],)
 
 # histogram_quantile(0.99, sum(rate(sirius_deps_latency_seconds_bucket[1m])) by (le, endpoint))
 # среднее время обработки за 1 мин

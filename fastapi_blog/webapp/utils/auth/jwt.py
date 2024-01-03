@@ -12,9 +12,9 @@ from conf.config import settings
 
 
 class JwtTokenT(TypedDict):
-    uid: str
+    uid: int
     exp: datetime
-    user: int
+    user_id: int
 
 
 @dataclass

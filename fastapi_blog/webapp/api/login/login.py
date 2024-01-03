@@ -13,6 +13,7 @@ from webapp.utils.auth.jwt import jwt_auth
 @auth_router.post(
     '/login',
     response_model=UserLoginResponse,
+    tags=['Login'],
 )
 async def login(
     body: UserLogin,

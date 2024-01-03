@@ -1,7 +1,7 @@
 import random
 from typing import List
 
-from aiokafka.producer import AIOKafkaProducer
+from aiokafka.producer import AIOKafkaProducer  # type: ignore
 
 producer: AIOKafkaProducer
 partitions: List[int]
