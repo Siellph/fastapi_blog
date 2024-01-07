@@ -6,6 +6,12 @@ URLS = {
     'file': {
         'resize': '/file/resize',
     },
+    'posts': {
+        'create': '/posts/create',
+        'read': '/posts',
+        'update': '/posts/{post_id}',
+        'delete': '/posts/{post_id}',
+    },
 }
 
 
