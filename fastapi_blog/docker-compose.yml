@@ -41,6 +41,16 @@ services:
     networks:
       - sirius_network
 
+  test:
+    build:
+      dockerfile: docker/Dockerfile
+      context: .
+    command: pytest
+    volumes:
+      - ./tests:/app/tests
+    depends_on:
+      - web
+
   redis:
     container_name: redis
     image: redis:6.2.4

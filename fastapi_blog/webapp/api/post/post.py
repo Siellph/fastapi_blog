@@ -40,14 +40,15 @@ async def read_posts(
     try:
         cached_posts = await redis_startup.redis.get(cache_key)
         if cached_posts:
-            return ORJSONResponse(content=cached_posts)
+            cached_posts_data = orjson.loads(cached_posts)
+            return ORJSONResponse(content=cached_posts_data)
     except RedisError as e:
         print(f'Ошибка Redis: {e}')
 
     posts, total_posts = await get_all_posts(session, page, per_page)
-    pydantic_posts = [PostRead.from_orm(post) for post in posts]
+    pydantic_posts = [PostRead.model_validate(post) for post in posts]
     response_data = {
-        'posts': [post.json() for post in pydantic_posts],
+        'posts': [post.dict() for post in pydantic_posts],  # Изменено здесь
         'total_posts': total_posts,
     }
     try:
