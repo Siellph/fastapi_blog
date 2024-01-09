@@ -27,7 +27,8 @@ async def get_current_user(
     if cached_user_data:
         # Десериализация данных пользователя из кэша
         user_data = orjson.loads(cached_user_data)
-        return User.parse_obj(user_data)
+        print(user_data)
+        return User.model_validate(user_data)
 
     # Получение данных пользователя из базы данных
     user = await get_user_by_id(session, user_id)
@@ -37,6 +38,6 @@ async def get_current_user(
         )
 
     # Сериализация и сохранение данных пользователя в Redis
-    await redis.set(f'user_{user_id}', orjson.dumps(user.dict()), ex=3600)
+    await redis.set(f'user_{user_id}', orjson.dumps(user.dict()), ex=1)
 
     return user

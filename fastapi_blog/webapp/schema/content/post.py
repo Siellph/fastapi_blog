@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class PostBase(BaseModel):
@@ -13,13 +13,11 @@ class PostCreate(PostBase):
 
 
 class PostRead(PostBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     author_id: int
     created_at: datetime
-
-    class Config:
-        orm_mode = True
-        from_attributes = True
 
 
 class PostUpdate(BaseModel):

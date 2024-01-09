@@ -17,23 +17,22 @@ from webapp.db import kafka
 from webapp.db.postgres import engine, get_session
 from webapp.models.meta import metadata
 
-TEST_USERNAME = "autotest"
-TEST_PASSWORD = "qwerty"
 
-
+# Фикстура для имени пользователя
 @pytest.fixture()
-def username() -> str:
-    return TEST_USERNAME
+def username():
+    return 'autotest'
 
 
+# Фикстура для пароля пользователя
 @pytest.fixture()
-def password() -> str:
-    return TEST_PASSWORD
+def password():
+    return 'qwerty'
 
 
 @pytest.fixture()
 async def client(app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url="http://test.com") as client:
+    async with AsyncClient(app=app, base_url='http://test.com') as client:
         yield client
 
 
@@ -56,30 +55,29 @@ async def db_session(app: FastAPI) -> AsyncGenerator[AsyncSession, None]:
 @pytest.fixture()
 async def _load_fixtures(
     db_session: AsyncSession, fixtures: List[Path]
-) -> None:
+) -> FixtureFunctionT:
     for fixture in fixtures:
         model = metadata.tables[fixture.stem]
 
-        with open(fixture, "r") as file:
+        with open(fixture, 'r') as file:
             values = json.load(file)
 
         await db_session.execute(insert(model).values(values))
         await db_session.commit()
 
+    return
+
 
 @pytest.fixture()
 def _mock_kafka(
     monkeypatch: pytest.MonkeyPatch,
-    kafka_received_messages: List,
-    mocked_hex: str,
-) -> None:
+    kafka_received_messages: List, mocked_hex: str
+) -> FixtureFunctionT:
     monkeypatch.setattr(
-        kafka,
-        "get_producer",
-        lambda: TestKafkaProducer(kafka_received_messages),
-    )
-    monkeypatch.setattr(kafka, "get_partition", lambda: 1)
-    monkeypatch.setattr(uuid.UUID, "hex", mocked_hex)
+        kafka, 'get_producer',
+        lambda: TestKafkaProducer(kafka_received_messages))
+    monkeypatch.setattr(kafka, 'get_partition', lambda: 1)
+    monkeypatch.setattr(uuid.UUID, 'hex', mocked_hex)
 
 
 @pytest.fixture()
@@ -93,11 +91,10 @@ async def access_token(
     username: str,
     password: str,
 ) -> str:
-    response = await client.post(
-        URLS["auth"]["login"],
-        json={"username": username, "password": password},
-    )
-    return response.json()["access_token"]
+    response = await client.post(URLS['auth']['login'],
+                                 json={'username': username,
+                                       'password': password})
+    return response.json()['access_token']
 
 
 @pytest.fixture()
@@ -120,13 +117,18 @@ async def _common_api_with_kafka_fixture(
 # Сначала импортируются необходимые модули и объекты,
 # такие как FastAPI, AsyncClient, AsyncSession, и т.д.
 
-# Затем определяются фикстуры для клиента API (client), сессии базы данных (db_session),
-# загрузки фикстур в базу данных (_load_fixtures), мокирования Kafka (_mock_kafka),
-# списка полученных сообщений Kafka (kafka_received_messages) и токена доступа (access_token).
+# Затем определяются фикстуры для клиента API (client),
+# сессии базы данных (db_session),
+# загрузки фикстур в базу данных (_load_fixtures),
+# мокирования Kafka (_mock_kafka),
+# списка полученных сообщений Kafka (kafka_received_messages)
+# и токена доступа (access_token).
 
 # Каждая фикстура выполняет определенные задачи, такие как подключение к базе данных,
 # создание клиента API, загрузка фикстур в базу данных, мокирование Kafka и т.д.
 
-# Наконец, определяются две фикстуры _common_api_fixture и _common_api_with_kafka_fixture,
-# которые используют другие фикстуры для создания общего набора фикстур для тестирования API.
+# Наконец, определяются две фикстуры _common_api_fixture
+# и _common_api_with_kafka_fixture,
+# которые используют другие фикстуры для создания общего
+# набора фикстур для тестирования API.
 # Эти фикстуры могут использоваться в других тестах для обеспечения общих условий.

@@ -2,11 +2,11 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class UserRegistration(BaseModel):
-    username: str = Field(..., min_length=3, example='username')
-    email: EmailStr = Field(..., example='user@example.com')
-    password: str = Field(..., min_length=8, example='yourpassword')
+    username: str = Field(..., min_length=3, json_schema_extra='username')
+    email: EmailStr = Field(..., json_schema_extra='user@example.com')
+    password: str = Field(..., min_length=8, json_schema_extra='yourpassword')
 
-    class Config:
+    class ConfigDict:
         schema_extra = {
             'example': {
                 'username': 'username',

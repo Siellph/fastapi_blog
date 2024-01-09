@@ -23,6 +23,7 @@ async def get_user_by_id(
     session: AsyncSession, user_id: int
 ) -> PydanticUser | None:
     result = await session.get(SQLAUser, user_id)
+    print(result)
     if result:
         return PydanticUser.model_validate(result)
     return None

@@ -1,16 +1,13 @@
 import asyncio
-from typing import AsyncGenerator
 
 import pytest
 from fastapi import FastAPI
-from sqlalchemy.ext.asyncio import create_async_engine
 
 from tests.my_types import FixtureFunctionT
 
+from webapp.db.postgres import engine
 from webapp.main import create_app
 from webapp.models import meta
-
-TEST_DB_URL = 'postgresql+asyncpg://postgres:postgres@web_db:5432/test_db'
 
 
 @pytest.fixture(scope='session')
@@ -24,15 +21,13 @@ def event_loop():
 
 
 @pytest.fixture(scope='session')
-async def _migrate_db() -> AsyncGenerator[None, None]:
-    test_engine = create_async_engine(TEST_DB_URL)
-
-    async with test_engine.begin() as conn:
+async def _migrate_db() -> FixtureFunctionT:
+    async with engine.begin() as conn:
         await conn.run_sync(meta.metadata.create_all)
 
     yield
 
-    async with test_engine.begin() as conn:
+    async with engine.begin() as conn:
         await conn.run_sync(meta.metadata.drop_all)
 
 
