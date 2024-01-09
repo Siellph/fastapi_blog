@@ -38,6 +38,6 @@ async def get_current_user(
         )
 
     # Сериализация и сохранение данных пользователя в Redis
-    await redis.set(f'user_{user_id}', orjson.dumps(user.dict()), ex=1)
+    await redis.set(f'user_{user_id}', orjson.dumps(user.dict()), ex=3600)
 
     return user
