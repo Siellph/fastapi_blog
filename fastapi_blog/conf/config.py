@@ -18,7 +18,7 @@ class Settings(BaseSettings):  # наследуется от BaseSettings
     KAFKA_TOPIC: str  # название топика Kafka, в который будут отправляться сообщения
 
     class Config:
-        env_file = '.env'
+        env_file = ".env"
 
 
 settings = Settings()  # type: ignore

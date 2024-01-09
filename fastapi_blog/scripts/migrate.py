@@ -18,7 +18,7 @@ async def main() -> None:
 # метода create_all() объекта метаданных
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())
 
 

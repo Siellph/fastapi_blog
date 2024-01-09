@@ -1,8 +1,15 @@
 import os
 
 import prometheus_client  # type: ignore
-from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, CollectorRegistry, generate_latest
-from prometheus_client.multiprocess import MultiProcessCollector  # type: ignore
+from prometheus_client import (
+    CONTENT_TYPE_LATEST,
+    REGISTRY,
+    CollectorRegistry,
+    generate_latest,
+)
+from prometheus_client.multiprocess import (
+    MultiProcessCollector,  # type: ignore
+)
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -35,7 +42,8 @@ DEFAULT_BUCKETS = (
 #     '',
 #     ['endpoint'],)
 
-# histogram_quantile(0.99, sum(rate(sirius_deps_latency_seconds_bucket[1m])) by (le, endpoint))
+# histogram_quantile(0.99, sum(rate(sirius_deps_latency_seconds_bucket[1m]))
+# by (le, endpoint))
 # среднее время обработки за 1 мин
 DEPS_LATENCY = prometheus_client.Histogram(
     'sirius_deps_latency_seconds',
@@ -52,4 +60,7 @@ def metrics(request: Request) -> Response:
     else:
         registry = REGISTRY
 
-    return Response(generate_latest(registry), headers={'Content-Type': CONTENT_TYPE_LATEST})
+    return Response(
+        generate_latest(registry),
+        headers={'Content-Type': CONTENT_TYPE_LATEST},
+    )

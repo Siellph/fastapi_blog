@@ -29,17 +29,23 @@ class JwtAuth:
         }
         return jwt.encode(access_token, self.secret)
 
-    def validate_token(self, authorization: Annotated[str, Header()]) -> JwtTokenT:
+    def validate_token(
+        self, authorization: Annotated[str, Header()]
+    ) -> JwtTokenT:
         parts = authorization.split()
         if len(parts) != 2 or parts[0].lower() != 'bearer':
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authorization header")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail='Invalid authorization header',
+            )
 
         token = parts[1]
         try:
             return cast(JwtTokenT, jwt.decode(token, self.secret))
         except JWTError:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid token")
-
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail='Invalid token'
+            )
 
 
 jwt_auth = JwtAuth(settings.JWT_SECRET_SALT)

@@ -7,4 +7,10 @@ class UserRegistration(BaseModel):
     password: str = Field(..., min_length=8, example='yourpassword')
 
     class Config:
-        schema_extra = {'example': {'username': 'username', 'email': 'user@example.com', 'password': 'yourpassword'}}
+        schema_extra = {
+            'example': {
+                'username': 'username',
+                'email': 'user@example.com',
+                'password': 'yourpassword',
+            }
+        }

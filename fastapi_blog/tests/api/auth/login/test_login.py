@@ -11,35 +11,41 @@ from tests.const import URLS
 from conf.config import settings
 
 BASE_DIR = Path(__file__).parent
-FIXTURES_PATH = BASE_DIR / 'fixtures'
+FIXTURES_PATH = BASE_DIR / "fixtures"
 
 
 @pytest.mark.parametrize(
-    ('username', 'password', 'expected_status', 'expected_access_token', 'fixtures'),
+    (
+        "username",
+        "password",
+        "expected_status",
+        "expected_access_token",
+        "fixtures",
+    ),
     [
         (
-            'invalid_user',
-            'password',
+            "invalid_user",
+            "password",
             status.HTTP_401_UNAUTHORIZED,
             False,
             [
-                FIXTURES_PATH / 'sirius.user.json',
+                FIXTURES_PATH / "sirius.user.json",
             ],
         ),
         (
-            'autotest',
-            'qwerty',
+            "autotest",
+            "qwerty",
             status.HTTP_200_OK,
             True,
             [
-                FIXTURES_PATH / 'sirius.user.json',
+                FIXTURES_PATH / "sirius.user.json",
             ],
         ),
     ],
 )
 @pytest.mark.asyncio()
 # @pytest.mark.freeze_time('2023-12-16')
-@pytest.mark.usefixtures('_common_api_fixture')
+@pytest.mark.usefixtures("_common_api_fixture")
 async def test_login(
     client: AsyncClient,
     username: str,
@@ -48,12 +54,15 @@ async def test_login(
     expected_access_token: Any,
     db_session: None,
 ) -> None:
-    response = await client.post(URLS['auth']['login'], json={'username': username, 'password': password})
+    response = await client.post(
+        URLS["auth"]["login"],
+        json={"username": username, "password": password},
+    )
 
     assert response.status_code == expected_status
 
     try:
-        jwt.decode(response.json()['access_token'], settings.JWT_SECRET_SALT)
+        jwt.decode(response.json()["access_token"], settings.JWT_SECRET_SALT)
         assert expected_access_token
     except (JWTError, KeyError):
         assert not expected_access_token

@@ -13,7 +13,11 @@ from conf.config import settings
 from webapp.api.file.router import file_router
 from webapp.db import kafka
 from webapp.metrics import DEPS_LATENCY
-from webapp.schema.file.resize import ImageResize, ImageResizeResponse, ResizeStatusEnum
+from webapp.schema.file.resize import (
+    ImageResize,
+    ImageResizeResponse,
+    ResizeStatusEnum,
+)
 from webapp.utils.auth.jwt import JwtTokenT, jwt_auth
 
 

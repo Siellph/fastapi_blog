@@ -17,9 +17,8 @@ from webapp.db import kafka
 from webapp.db.postgres import engine, get_session
 from webapp.models.meta import metadata
 
-
-TEST_USERNAME = 'autotest'
-TEST_PASSWORD = 'qwerty'
+TEST_USERNAME = "autotest"
+TEST_PASSWORD = "qwerty"
 
 
 @pytest.fixture()
@@ -34,7 +33,7 @@ def password() -> str:
 
 @pytest.fixture()
 async def client(app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url='http://test.com') as client:
+    async with AsyncClient(app=app, base_url="http://test.com") as client:
         yield client
 
 
@@ -55,11 +54,13 @@ async def db_session(app: FastAPI) -> AsyncGenerator[AsyncSession, None]:
 
 
 @pytest.fixture()
-async def _load_fixtures(db_session: AsyncSession, fixtures: List[Path]) -> None:
+async def _load_fixtures(
+    db_session: AsyncSession, fixtures: List[Path]
+) -> None:
     for fixture in fixtures:
         model = metadata.tables[fixture.stem]
 
-        with open(fixture, 'r') as file:
+        with open(fixture, "r") as file:
             values = json.load(file)
 
         await db_session.execute(insert(model).values(values))
@@ -67,10 +68,18 @@ async def _load_fixtures(db_session: AsyncSession, fixtures: List[Path]) -> None
 
 
 @pytest.fixture()
-def _mock_kafka(monkeypatch: pytest.MonkeyPatch, kafka_received_messages: List, mocked_hex: str) -> None:
-    monkeypatch.setattr(kafka, 'get_producer', lambda: TestKafkaProducer(kafka_received_messages))
-    monkeypatch.setattr(kafka, 'get_partition', lambda: 1)
-    monkeypatch.setattr(uuid.UUID, 'hex', mocked_hex)
+def _mock_kafka(
+    monkeypatch: pytest.MonkeyPatch,
+    kafka_received_messages: List,
+    mocked_hex: str,
+) -> None:
+    monkeypatch.setattr(
+        kafka,
+        "get_producer",
+        lambda: TestKafkaProducer(kafka_received_messages),
+    )
+    monkeypatch.setattr(kafka, "get_partition", lambda: 1)
+    monkeypatch.setattr(uuid.UUID, "hex", mocked_hex)
 
 
 @pytest.fixture()
@@ -84,8 +93,11 @@ async def access_token(
     username: str,
     password: str,
 ) -> str:
-    response = await client.post(URLS['auth']['login'], json={'username': username, 'password': password})
-    return response.json()['access_token']
+    response = await client.post(
+        URLS["auth"]["login"],
+        json={"username": username, "password": password},
+    )
+    return response.json()["access_token"]
 
 
 @pytest.fixture()

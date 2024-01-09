@@ -3,32 +3,38 @@ from typing import List
 import pytest
 from httpx import AsyncClient
 
-from tests.api.file.const import WIDTH, HEIGHT, MOCKED_HEX, value, BASE_DIR
+from tests.api.file.const import BASE_DIR, HEIGHT, MOCKED_HEX, WIDTH, value
 from tests.const import URLS
 
-
-FIXTURES_PATH = BASE_DIR / 'fixtures'
-
+FIXTURES_PATH = BASE_DIR / "fixtures"
 
 
 @pytest.mark.parametrize(
-    ('username', 'password', 'fixtures', 'mocked_hex', 'width', 'height', 'kafka_expected_messages'),
+    (
+        "username",
+        "password",
+        "fixtures",
+        "mocked_hex",
+        "width",
+        "height",
+        "kafka_expected_messages",
+    ),
     [
         (
-            'autotest',
-            'qwerty',
+            "autotest",
+            "qwerty",
             [
-                FIXTURES_PATH / 'sirius.user.json',
+                FIXTURES_PATH / "sirius.user.json",
             ],
             MOCKED_HEX,
             WIDTH,
             HEIGHT,
-            [{'partition': 1, 'topic': 'test_resize_image', 'value': value}],
+            [{"partition": 1, "topic": "test_resize_image", "value": value}],
         ),
     ],
 )
 @pytest.mark.asyncio()
-@pytest.mark.usefixtures('_common_api_with_kafka_fixture')
+@pytest.mark.usefixtures("_common_api_with_kafka_fixture")
 async def test_resize(
     client: AsyncClient,
     username: str,
@@ -39,15 +45,15 @@ async def test_resize(
     kafka_received_messages: List,
     kafka_expected_messages: List,
 ) -> None:
-    with open(BASE_DIR / 'test_file', 'rb') as file:
+    with open(BASE_DIR / "test_file", "rb") as file:
         response = await client.post(
-            URLS['file']['resize'],
-            files={'image': file},
+            URLS["file"]["resize"],
+            files={"image": file},
             params={
-                'width': width,
-                'height': height,
+                "width": width,
+                "height": height,
             },
-            headers={'Authorization': f'Bearer {access_token}'},
+            headers={"Authorization": f"Bearer {access_token}"},
         )
 
     assert response.status_code == 200
