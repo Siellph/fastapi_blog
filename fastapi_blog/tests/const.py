@@ -9,6 +9,12 @@ URLS = {
         'update': '/posts/{post_id}',
         'delete': '/posts/{post_id}',
     },
+    'comments': {
+        'create': '/comments/{post_id}/create_comments',
+        'read': '/comments/{post_id}',
+        'update': '/comments/{comment_id}',
+        'delete': '/comments/{comment_id}',
+    }
 }
 
 
