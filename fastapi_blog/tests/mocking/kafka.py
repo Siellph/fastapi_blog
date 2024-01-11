@@ -11,16 +11,11 @@ class TestKafkaProducer:
         self,
         topic,
         value=None,
-        key=None,
-        partition=None,
-        timestamp_ms=None,
-        headers=None,
     ):
         self.kafka_received_messages.append(
             {
                 'topic': topic,
                 'value': value,
-                'partition': partition,
             }
         )
 

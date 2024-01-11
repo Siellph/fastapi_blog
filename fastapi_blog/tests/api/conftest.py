@@ -1,5 +1,4 @@
 import json
-import uuid
 from pathlib import Path
 from typing import AsyncGenerator, List
 
@@ -71,13 +70,11 @@ async def _load_fixtures(
 @pytest.fixture()
 def _mock_kafka(
     monkeypatch: pytest.MonkeyPatch,
-    kafka_received_messages: List, mocked_hex: str
+    kafka_received_messages: List
 ) -> FixtureFunctionT:
     monkeypatch.setattr(
         kafka, 'get_producer',
         lambda: TestKafkaProducer(kafka_received_messages))
-    monkeypatch.setattr(kafka, 'get_partition', lambda: 1)
-    monkeypatch.setattr(uuid.UUID, 'hex', mocked_hex)
 
 
 @pytest.fixture()
