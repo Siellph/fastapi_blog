@@ -6,11 +6,9 @@ from fastapi import FastAPI
 from scripts.load_data import main as load_data_main
 from tests.my_types import FixtureFunctionT
 
-from webapp.db import kafka
 from webapp.db.postgres import engine
 from webapp.main import create_app
 from webapp.models import meta
-from webapp.on_startup.kafka import create_producer
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -22,15 +20,6 @@ def _run_after_tests():
                 'fixture/sirius/sirius.post.json',
                 'fixture/sirius/sirius.comment.json',]
     loop.run_until_complete(load_data_main(fixtures))
-
-
-@pytest.fixture(scope='session', autouse=True)
-async def _kafka_producer_fixture():
-    # Инициализация Kafka producer
-    await create_producer()
-    yield
-    # Закрытие Kafka producer после завершения тестов
-    await kafka.producer.stop()
 
 
 @pytest.fixture(scope='session')

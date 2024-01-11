@@ -11,7 +11,12 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
 
 
 @pytest.mark.parametrize(
-    ('username', 'password', 'expected_status', 'fixtures'),
+    (
+        'username',
+        'password',
+        'expected_status',
+        'fixtures'
+    ),
     [
         (
             'autotest',

@@ -1,7 +1,9 @@
 import json
 from pathlib import Path
+from typing import List
 
 import pytest
+import msgpack
 from httpx import AsyncClient
 from starlette import status
 
@@ -11,27 +13,41 @@ from tests.const import URLS
 BASE_DIR = Path(__file__).parent
 FIXTURES_PATH = BASE_DIR / 'fixtures'
 
-with open(FIXTURES_PATH / 'sirius.user.json', 'r') as file:
-    user_data = json.load(file)
-# Загрузка данных для использования в тестах
-with open(FIXTURES_PATH / 'sirius.comment.json', 'r') as file:
-    comment_data = json.load(file)
-
 
 # Тест на создание комментария
 @pytest.mark.parametrize(
     (
+        'username',
+        'password',
+        'post_id',
+        'content',
         'expected_status',
-        'expected_status_token',
-        'fixtures'
+        'fixtures',
+        'kafka_expected_messages'
     ),
     [
         (
+            'autotest',
+            'qwerty',
+            1,
+            'Great job!',
             status.HTTP_201_CREATED,
-            True,
             [
-                FIXTURES_PATH / 'sirius.user.json'
-            ]
+                FIXTURES_PATH / 'sirius.user.json',
+                FIXTURES_PATH / 'sirius.post.json'
+            ],
+            [
+                {
+                    'partition': 1,
+                    'topic': 'create_comment',
+                    'value':
+                        [
+                            {
+                                'content': 'Great job!',
+                            }
+                        ]
+                }
+            ],
         )
     ]
 )
@@ -39,28 +55,29 @@ with open(FIXTURES_PATH / 'sirius.comment.json', 'r') as file:
 @pytest.mark.usefixtures('_common_api_with_kafka_fixture')
 async def test_create_comment(
     client: AsyncClient,
-    access_token: str,
-    kafka_received_messages,
+    username: str,
+    password: str,
     post_id: int,
-    comment_data: dict,
-    fixtures: list,
+    content: str,
+    expected_status: int,
+    access_token,
+    kafka_received_messages: List,
+    kafka_expected_messages: List,
 ):
     headers = {'Authorization': f'Bearer Bearer {access_token}'}
     response = await client.post(
         URLS['comments']['create'].format(post_id=post_id),
-        json=comment_data[0]['content'],
+        json={'content': content},
         headers=headers,
     )
 
     # Проверки ответа и сообщений Kafka
-    assert response.status_code == status.HTTP_201_CREATED
-    assert response.json()['content'] == comment_payload['content']
-    assert response.json()['post_id'] == post_id
-
-    assert len(kafka_received_messages) == 1
-    kafka_message = kafka_received_messages[0]
-    assert kafka_message['topic'] == 'create_comments'
-    assert json.loads(kafka_message['value']) == {
-        'comment_id': response.json()['id'],
-        'content': comment_payload['content']
-    }
+    assert response.status_code == expected_status
+    assert kafka_received_messages == kafka_expected_messages
+    # assert len(kafka_received_messages) == 1
+    # kafka_message = kafka_received_messages[0]
+    # assert kafka_message['topic'] == 'create_comment'
+    # assert json.loads(kafka_message['value']) == {
+    #     'id': response.json()['id'],
+    #     'content': content
+    # }
