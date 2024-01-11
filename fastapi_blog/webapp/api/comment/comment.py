@@ -5,6 +5,7 @@ from redis.exceptions import RedisError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .router import comment_router
+from webapp import kafka_producer_decorator
 from webapp.crud.comment import (
     create_comment,
     delete_comment,
@@ -34,6 +35,7 @@ async def invalidate_cache(post_id: int):
 
 
 @comment_router.get('/{post_id}', tags=['Comments'])
+@kafka_producer_decorator('get_comments')
 async def read_comments(
     post_id: int,
     session: AsyncSession = Depends(get_session),
@@ -78,6 +80,7 @@ async def read_comments(
     response_class=ORJSONResponse,
     tags=['Comments'],
 )
+@kafka_producer_decorator('create_comments')
 async def create(
     post_id: int,
     comment: CommentCreate,
@@ -97,6 +100,7 @@ async def create(
     response_class=ORJSONResponse,
     tags=['Comments'],
 )
+@kafka_producer_decorator('update_comments')
 async def update(
     comment_id: int,
     comment_update: CommentUpdate,
@@ -127,6 +131,7 @@ async def update(
     response_class=ORJSONResponse,
     tags=['Comments'],
 )
+@kafka_producer_decorator('delete_comments')
 async def delete(
     comment_id: int,
     session: AsyncSession = Depends(get_session),

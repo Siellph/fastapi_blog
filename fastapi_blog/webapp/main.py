@@ -5,7 +5,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from webapp.api.comment.router import comment_router
-from webapp.api.file.router import file_router
 from webapp.api.login.router import auth_router
 from webapp.api.post.router import post_router
 from webapp.metrics import metrics
@@ -34,7 +33,6 @@ def setup_routers(app: FastAPI) -> None:
     app.include_router(auth_router)
     app.include_router(post_router)
     app.include_router(comment_router)
-    app.include_router(file_router)
 
 
 @asynccontextmanager

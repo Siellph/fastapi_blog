@@ -46,8 +46,15 @@ async def _load_fixtures(db_session: AsyncSession):
 
 # Тест на создание комментария
 @pytest.mark.asyncio()
-@pytest.mark.usefixtures('_common_api_fixture', '_load_fixtures')
-async def test_create_comment(client: AsyncClient, access_token: str):
+@pytest.mark.usefixtures(
+    '_common_api_with_kafka_fixture',
+    '_load_fixtures'
+)
+async def test_create_comment(
+    client: AsyncClient,
+    access_token: str,
+    kafka_received_messages,
+):
     headers = {'Authorization': f'Bearer Bearer {access_token}'}
     post_id = int(post_data[0]['id'])
     response = await client.post(
@@ -59,3 +66,11 @@ async def test_create_comment(client: AsyncClient, access_token: str):
     assert response.status_code == status.HTTP_201_CREATED
     assert response.json()['content'] == comment_data[0]['content']
     assert response.json()['post_id'] == comment_data[0]['post_id']
+
+    assert len(kafka_received_messages) == 1
+    kafka_message = kafka_received_messages[0]
+    assert kafka_message['topic'] == 'create_comment'
+    assert json.loads(kafka_message['value']) == {
+        'comment_id': response.json()['id'],
+        'content': comment_data[0]['content']
+    }

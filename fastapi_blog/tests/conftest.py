@@ -35,6 +35,7 @@ def event_loop():
 @pytest.fixture(scope='session')
 async def _migrate_db() -> FixtureFunctionT:
     async with engine.begin() as conn:
+        await conn.run_sync(meta.metadata.drop_all)
         await conn.run_sync(meta.metadata.create_all)
 
     yield
