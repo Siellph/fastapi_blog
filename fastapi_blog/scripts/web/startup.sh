@@ -9,6 +9,7 @@ echo "Start service" # выводит сообщения
 # Выполнение миграций Alembic
 alembic upgrade head
 # load fixtures
+
 python scripts/load_data.py fixture/sirius/sirius.user.json
 python scripts/load_data.py fixture/sirius/sirius.post.json
 python scripts/load_data.py fixture/sirius/sirius.comment.json

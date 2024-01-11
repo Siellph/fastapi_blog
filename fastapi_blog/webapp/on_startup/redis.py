@@ -14,6 +14,6 @@ async def get_redis_pool() -> Optional[Redis]:
     """
     global redis
     redis = aioredis.from_url(
-        "redis://redis", encoding="utf-8", decode_responses=True
+        'redis://redis', encoding='utf-8', decode_responses=True
     )
     return redis
