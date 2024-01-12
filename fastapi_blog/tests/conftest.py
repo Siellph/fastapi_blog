@@ -31,9 +31,11 @@ def _run_after_tests():
     yield
 
     loop = asyncio.get_event_loop()
-    fixtures = ['fixture/sirius/sirius.user.json',
-                'fixture/sirius/sirius.post.json',
-                'fixture/sirius/sirius.comment.json',]
+    fixtures = [
+        'fixture/sirius/sirius.user.json',
+        'fixture/sirius/sirius.post.json',
+        'fixture/sirius/sirius.comment.json',
+    ]
     loop.run_until_complete(load_data_main(fixtures))
 
 

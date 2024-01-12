@@ -41,4 +41,5 @@ def kafka_producer_decorator(topic, status_code=status.HTTP_200_OK):
             return ORJSONResponse(result_data, status_code=status_code)
 
         return wrapper
+
     return decorator

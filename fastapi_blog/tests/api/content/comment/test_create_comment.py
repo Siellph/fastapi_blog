@@ -19,7 +19,7 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
         'content',
         'expected_status',
         'fixtures',
-        'kafka_expected_messages'
+        'kafka_expected_messages',
     ),
     [
         (
@@ -30,22 +30,21 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
             status.HTTP_201_CREATED,
             [
                 FIXTURES_PATH / 'sirius.user.json',
-                FIXTURES_PATH / 'sirius.post.json'
+                FIXTURES_PATH / 'sirius.post.json',
             ],
             [
                 {
                     'partition': 1,
                     'topic': 'create_comment',
-                    'value':
-                        [
-                            {
-                                'content': 'Great job!',
-                            }
-                        ]
+                    'value': [
+                        {
+                            'content': 'Great job!',
+                        }
+                    ],
                 }
             ],
         )
-    ]
+    ],
 )
 @pytest.mark.asyncio()
 @pytest.mark.usefixtures('_common_api_with_kafka_fixture')

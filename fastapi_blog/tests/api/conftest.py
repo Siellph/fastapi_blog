@@ -40,7 +40,9 @@ async def db_session(app: FastAPI) -> AsyncGenerator[AsyncSession, None]:
 
 
 @pytest.fixture()
-async def _load_fixtures(db_session: AsyncSession, fixtures: List[Path]) -> FixtureFunctionT:
+async def _load_fixtures(
+    db_session: AsyncSession, fixtures: List[Path]
+) -> FixtureFunctionT:
     for fixture in fixtures:
         model = metadata.tables[fixture.stem]
 
@@ -54,8 +56,16 @@ async def _load_fixtures(db_session: AsyncSession, fixtures: List[Path]) -> Fixt
 
 
 @pytest.fixture()
-def _mock_kafka(monkeypatch: pytest.MonkeyPatch, kafka_received_messages: List, raising=False) -> FixtureFunctionT:
-    monkeypatch.setattr(kafka, 'get_producer', lambda: TestKafkaProducer(kafka_received_messages))
+def _mock_kafka(
+    monkeypatch: pytest.MonkeyPatch,
+    kafka_received_messages: List,
+    raising=False,
+) -> FixtureFunctionT:
+    monkeypatch.setattr(
+        kafka,
+        'get_producer',
+        lambda: TestKafkaProducer(kafka_received_messages),
+    )
     monkeypatch.setattr(kafka, 'get_partition', lambda: 1)
 
 
@@ -70,7 +80,10 @@ async def access_token(
     username: str,
     password: str,
 ) -> str:
-    response = await client.post(URLS['auth']['login'], json={'username': username, 'password': password})
+    response = await client.post(
+        URLS['auth']['login'],
+        json={'username': username, 'password': password},
+    )
     return response.json()['access_token']
 
 
@@ -79,6 +92,7 @@ async def _common_api_fixture(
     _load_fixtures: FixtureFunctionT,
 ) -> None:
     return
+
 
 @pytest.fixture()
 async def _common_api_with_kafka_fixture(

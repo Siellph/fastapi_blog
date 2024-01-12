@@ -13,13 +13,7 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
 
 
 @pytest.mark.parametrize(
-    (
-        'username',
-        'password',
-        'expected_status',
-        'content',
-        'fixtures'
-    ),
+    ('username', 'password', 'expected_status', 'content', 'fixtures'),
     [
         (
             'autotest',
@@ -28,9 +22,9 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
             'This is my new post!',
             [
                 FIXTURES_PATH / 'sirius.user.json',
-            ]
+            ],
         )
-    ]
+    ],
 )
 @pytest.mark.asyncio()
 @pytest.mark.usefixtures('_common_api_with_kafka_fixture')

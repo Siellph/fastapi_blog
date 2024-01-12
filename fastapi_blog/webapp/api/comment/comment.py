@@ -59,7 +59,7 @@ async def read_comments(
         CommentRead.model_validate(comment.__dict__) for comment in comments
     ]
     response_data = {
-        'comments': [comment.dict() for comment in pydantic_comments],
+        'comments': [comment.model_dump() for comment in pydantic_comments],
         'total_comments': total_comments,
     }
     serialized_comments = orjson.dumps(response_data)

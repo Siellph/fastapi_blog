@@ -20,7 +20,7 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
         'comment_id',
         'updated_content',
         'expected_status',
-        'fixtures'
+        'fixtures',
     ),
     [
         (
@@ -32,10 +32,10 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
             [
                 FIXTURES_PATH / 'sirius.user.json',
                 FIXTURES_PATH / 'sirius.post.json',
-                FIXTURES_PATH / 'sirius.comment.json'
-            ]
+                FIXTURES_PATH / 'sirius.comment.json',
+            ],
         )
-    ]
+    ],
 )
 @pytest.mark.asyncio()
 @pytest.mark.usefixtures('_common_api_fixture', '_load_fixtures')

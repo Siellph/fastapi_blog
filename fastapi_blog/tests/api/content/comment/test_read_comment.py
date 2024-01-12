@@ -26,10 +26,10 @@ FIXTURES_PATH = BASE_DIR / 'fixtures'
             [
                 FIXTURES_PATH / 'sirius.user.json',
                 FIXTURES_PATH / 'sirius.post.json',
-                FIXTURES_PATH / 'sirius.comment.json'
-            ]
+                FIXTURES_PATH / 'sirius.comment.json',
+            ],
         )
-    ]
+    ],
 )
 @pytest.mark.asyncio()
 @pytest.mark.usefixtures('_common_api_with_kafka_fixture')
