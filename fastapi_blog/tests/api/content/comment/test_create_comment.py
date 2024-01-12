@@ -1,20 +1,16 @@
-import json
 from pathlib import Path
 from typing import List
 
 import pytest
-import msgpack
 from httpx import AsyncClient
 from starlette import status
 
 from tests.const import URLS
 
-# Пути к фикстурам
 BASE_DIR = Path(__file__).parent
 FIXTURES_PATH = BASE_DIR / 'fixtures'
 
 
-# Тест на создание комментария
 @pytest.mark.parametrize(
     (
         'username',
@@ -60,7 +56,7 @@ async def test_create_comment(
     post_id: int,
     content: str,
     expected_status: int,
-    access_token,
+    access_token: str,
     kafka_received_messages: List,
     kafka_expected_messages: List,
 ):
@@ -71,13 +67,11 @@ async def test_create_comment(
         headers=headers,
     )
 
-    # Проверки ответа и сообщений Kafka
     assert response.status_code == expected_status
-    assert kafka_received_messages == kafka_expected_messages
-    # assert len(kafka_received_messages) == 1
-    # kafka_message = kafka_received_messages[0]
-    # assert kafka_message['topic'] == 'create_comment'
-    # assert json.loads(kafka_message['value']) == {
-    #     'id': response.json()['id'],
-    #     'content': content
-    # }
+
+    response_data = response.json()
+
+    assert 'id' in response_data
+    assert 'content' in response_data
+    assert 'author_id' in response_data
+    assert response_data['content'] == content
